@@ -1,0 +1,28 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Baby {
+  id        Int        @id @default(autoincrement())
+  name      String
+  sleepLogs SleepLog[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model SleepLog {
+  id        Int       @id @default(autoincrement())
+  baby      Baby      @relation(fields: [babyId], references: [id])
+  babyId    Int
+  start     DateTime
+  end       DateTime?
+  note      String?
+  createdAt DateTime  @default(now())
+}
