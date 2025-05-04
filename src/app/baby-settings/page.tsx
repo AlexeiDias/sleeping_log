@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 
 export default function BabySettings() {
   const [name, setName] = useState('');
+const [email, setEmail] = useState('');
+
   const [babies, setBabies] = useState([]);
   const router = useRouter();
 
@@ -17,15 +19,17 @@ export default function BabySettings() {
   }, []);
 
   const createBaby = async () => {
-    if (!name) return;
+    if (!name || !email) return;
     await fetch('/api/babies', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name }),
+      body: JSON.stringify({ name, email }),
     });
     setName('');
+    setEmail('');
     fetchBabies();
   };
+  
 
   const deleteBaby = async (id: number) => {
     await fetch(`/api/babies/${id}`, { method: 'DELETE' });
@@ -46,17 +50,28 @@ export default function BabySettings() {
 
       <h2 className="text-2xl font-bold mb-4">👶 Manage Babies</h2>
 
-      <div className="flex gap-2 mb-4">
-        <input
-          className="border px-2 py-1"
-          placeholder="Baby name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <button onClick={createBaby} className="bg-green-600 text-white px-4 py-1 rounded">
-          Add
-        </button>
-      </div>
+      <div className="flex flex-col sm:flex-row gap-2 mb-4">
+  <input
+    className="border px-2 py-1"
+    placeholder="Baby name"
+    value={name}
+    onChange={(e) => setName(e.target.value)}
+  />
+  <input
+    className="border px-2 py-1"
+    placeholder="Parent email"
+    type="email"
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+  />
+  <button
+    onClick={createBaby}
+    className="bg-green-600 text-white px-4 py-1 rounded"
+  >
+    Add
+  </button>
+</div>
+
 
       <ul className="list-disc ml-6">
         {babies.map((baby: any) => (

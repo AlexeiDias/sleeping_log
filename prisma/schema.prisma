@@ -1,5 +1,3 @@
-// prisma/schema.prisma
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,19 +8,64 @@ datasource db {
 }
 
 model Baby {
-  id        Int        @id @default(autoincrement())
-  name      String
-  sleepLogs SleepLog[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id           Int           @id @default(autoincrement())
+  name         String
+  email String?  // ← the `?` makes it optional
+  createdAt    DateTime      @default(now())
+  sleepLogs    SleepLog[]
+  diaperLogs   DiaperLog[]
+  feedingLogs  FeedingLog[]
+  bottleFeeds  BottleFeed[]
 }
 
+
 model SleepLog {
-  id        Int       @id @default(autoincrement())
-  baby      Baby      @relation(fields: [babyId], references: [id])
+  id        Int      @id @default(autoincrement())
   babyId    Int
+  baby      Baby     @relation(fields: [babyId], references: [id], onDelete: Cascade)
   start     DateTime
   end       DateTime?
-  note      String?
-  createdAt DateTime  @default(now())
+  note      String?  @db.Text
+}
+
+model DiaperLog {
+  id        Int      @id @default(autoincrement())
+  babyId    Int
+  baby      Baby     @relation(fields: [babyId], references: [id], onDelete: Cascade)
+  time      DateTime @default(now())
+  type      DiaperType
+  note      String?  @db.Text
+}
+
+model FeedingLog {
+  id        Int      @id @default(autoincrement())
+  babyId    Int
+  baby      Baby     @relation(fields: [babyId], references: [id], onDelete: Cascade)
+  time      DateTime @default(now())
+  mealType  MealType
+  menu      String
+  quantity  Int
+  note      String?  @db.Text
+}
+
+model BottleFeed {
+  id        Int      @id @default(autoincrement())
+  babyId    Int
+  baby      Baby     @relation(fields: [babyId], references: [id], onDelete: Cascade)
+  time      DateTime @default(now())
+  volumeMl  Int
+  note      String?  @db.Text
+}
+
+enum DiaperType {
+  WET
+  SOLID
+  BOTH
+}
+
+enum MealType {
+  BREAKFAST
+  LUNCH
+  DINNER
+  SNACK
 }

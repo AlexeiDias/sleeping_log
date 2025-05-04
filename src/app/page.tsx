@@ -16,8 +16,8 @@ export default async function HomePage() {
   });
 
   return (
-    <main className="p-4">
-      <h1 className="text-xl font-bold mb-4">🍼 Baby Sleep Overview</h1>
+    <main className="p-4 space-y-6">
+      <h1 className="text-2xl font-bold">🍼 Baby Sleep Overview</h1>
 
       <div className="overflow-x-auto text-sm">
         <table className="min-w-full border-collapse text-gray-800">
@@ -25,8 +25,8 @@ export default async function HomePage() {
             <tr className="bg-gray-800 text-white text-left">
               <th className="px-2 py-1">Baby</th>
               <th className="px-2 py-1">Date</th>
-              <th className="px-2 py-1">Sleep Time</th>
-              <th className="px-2 py-1">Wake Time</th>
+              <th className="px-2 py-1">Sleep</th>
+              <th className="px-2 py-1">Wake</th>
               <th className="px-2 py-1">Duration</th>
               <th className="px-2 py-1">Actions</th>
             </tr>
@@ -41,14 +41,12 @@ export default async function HomePage() {
                   <td className="px-2 py-1">
                     {idx === 0 ? (
                       <Link
-                        href={`/baby/${baby.id}/stats`}
-                        className="text-blue-600 hover:underline"
+                        href={`/baby/${encodeURIComponent(baby.name.toLowerCase())}`}
+                        className="text-blue-600 hover:underline font-semibold"
                       >
                         {baby.name}
                       </Link>
-                    ) : (
-                      ''
-                    )}
+                    ) : null}
                   </td>
                   <td className="px-2 py-1">
                     {log?.start
@@ -73,17 +71,40 @@ export default async function HomePage() {
                           (new Date(log.end).getTime() -
                             new Date(log.start).getTime()) /
                             60000
-                        )
+                        ) + ' min'
                       : '-'}
                   </td>
                   <td className="px-2 py-1">
-  {idx === 0 && (
-    <div className="flex flex-col gap-1">
-      <SleepToggleButton babyId={baby.id} />
-    </div>
-  )}
-</td>
+                    {idx === 0 && (
+                      <div className="flex flex-col gap-1">
+                        <SleepToggleButton babyId={baby.id} />
 
+                        <div className="flex gap-2 pt-1">
+                          <Link
+                            href={`/baby/${encodeURIComponent(baby.name.toLowerCase())}/diaper`}
+                            title="Log Diaper"
+                            className="bg-amber-100 hover:bg-amber-200 text-amber-800 px-2 py-1 rounded"
+                          >
+                            💧
+                          </Link>
+                          <Link
+                            href={`/baby/${encodeURIComponent(baby.name.toLowerCase())}/feeding`}
+                            title="Log Feeding"
+                            className="bg-green-100 hover:bg-green-200 text-green-800 px-2 py-1 rounded"
+                          >
+                            🍽️
+                          </Link>
+                          <Link
+                            href={`/baby/${encodeURIComponent(baby.name.toLowerCase())}/bottle`}
+                            title="Log Bottle Feed"
+                            className="bg-blue-100 hover:bg-blue-200 text-blue-800 px-2 py-1 rounded"
+                          >
+                            🍼
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+                  </td>
                 </tr>
               ));
             })}
@@ -93,7 +114,7 @@ export default async function HomePage() {
 
       <Link
         href="/baby-settings"
-        className="inline-block mt-6 text-blue-600 hover:underline text-sm"
+        className="inline-block text-blue-600 hover:underline text-sm"
       >
         Manage Babies ⚙️
       </Link>

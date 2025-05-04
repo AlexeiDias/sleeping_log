@@ -1,63 +1,53 @@
+// src/components/SleepChart.tsx
 'use client';
 
+import { useEffect, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
-  TimeScale,
+  LineElement,
+  CategoryScale,
   LinearScale,
   PointElement,
-  LineElement,
+  TimeScale,
   Tooltip,
-  Legend
 } from 'chart.js';
 import 'chartjs-adapter-date-fns';
+import { SleepLog } from '@prisma/client';
 
-ChartJS.register(TimeScale, LinearScale, PointElement, LineElement, Tooltip, Legend);
+ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, TimeScale, Tooltip);
 
-export default function SleepChart({ logs }: { logs: any[] }) {
-  const data = {
+export default function SleepChart({ babyId }: { babyId: number }) {
+  const [logs, setLogs] = useState<SleepLog[]>([]);
+
+  useEffect(() => {
+    const load = async () => {
+      const res = await fetch(`/api/sleep/${babyId}`);
+      const data = await res.json();
+      setLogs(data);
+    };
+    load();
+  }, [babyId]);
+
+  const chartData = {
+    labels: logs.map((log) => log.start),
     datasets: [
       {
         label: 'Sleep Duration (min)',
-        data: logs
-          .filter(log => log.start && log.end)
-          .map(log => ({
-            x: new Date(log.start),
-            y: Math.round((new Date(log.end).getTime() - new Date(log.start).getTime()) / 60000),
-          })),
+        data: logs.map((log) =>
+          log.end ? (new Date(log.end).getTime() - new Date(log.start).getTime()) / 60000 : 0
+        ),
         borderColor: '#3b82f6',
-        backgroundColor: '#bfdbfe',
-        tension: 0.3,
+        backgroundColor: '#93c5fd',
+        tension: 0.2,
       },
     ],
   };
 
-  const options = {
-    scales: {
-      x: {
-        type: 'time',
-        time: {
-          unit: 'day',
-        },
-        title: {
-          display: true,
-          text: 'Date',
-        },
-      },
-      y: {
-        title: {
-          display: true,
-          text: 'Minutes Slept',
-        },
-        beginAtZero: true,
-      },
-    },
-  };
-
   return (
-    <div className="my-6">
-      <h2 className="text-xl font-semibold mb-2">📈 Sleep Chart</h2>
-      <Line data={data} options={options} />
+    <div className="bg-white shadow rounded p-4">
+      <h2 className="text-lg font-semibold text-gray-800 mb-2">🛏️ Sleep Chart</h2>
+      <Line data={chartData} />
     </div>
   );
 }
