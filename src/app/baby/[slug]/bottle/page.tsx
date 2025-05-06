@@ -4,11 +4,12 @@ import { notFound } from 'next/navigation';
 import BottleForm from '@/components/BottleForm';
 import Link from 'next/link';
 
-export default async function BottleEntryPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export default async function BottleEntryPage(
+  props: {
+    params: Promise<{ slug: string }>;
+  }
+) {
+  const params = await props.params;
   const baby = await prisma.baby.findFirst({
     where: {
       name: decodeURIComponent(params.slug),

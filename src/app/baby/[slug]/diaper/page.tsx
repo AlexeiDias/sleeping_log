@@ -3,7 +3,8 @@ import { notFound } from 'next/navigation';
 import DiaperForm from '@/components/DiaperForm';
 import Link from 'next/link';
 
-export default async function DiaperEntryPage({ params }: { params: { slug: string } }) {
+export default async function DiaperEntryPage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const slug = decodeURIComponent(params.slug);
 
   const baby = await prisma.baby.findFirst({

@@ -3,7 +3,8 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import SleepChart from '@/components/SleepChart';
 
-export default async function BabyStatsPage({ params }: { params: { slug: string } }) {
+export default async function BabyStatsPage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const id = parseInt(params.slug);
   if (isNaN(id)) return notFound();
 

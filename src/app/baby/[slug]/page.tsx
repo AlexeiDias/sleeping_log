@@ -9,7 +9,7 @@ import Link from 'next/link';
 import DailyNoteForm from '@/components/DailyNoteForm';
 import SleepTimer from '@/components/SleepTimer';
 
-export default async function BabyDashboard(props: { params: { slug: string } }) {
+export default async function BabyDashboard(props: { params: Promise<{ slug: string }> }) {
   const { slug } = await props.params; // ✅ async destructure
   const decodedSlug = decodeURIComponent(slug);
 

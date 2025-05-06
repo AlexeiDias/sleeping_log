@@ -3,7 +3,8 @@ import { notFound } from 'next/navigation';
 import FeedingForm from '@/components/FeedingForm';
 import Link from 'next/link';
 
-export default async function FeedingEntryPage({ params }: { params: { slug: string } }) {
+export default async function FeedingEntryPage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const baby = await prisma.baby.findFirst({
     where: {
       name: decodeURIComponent(params.slug),
