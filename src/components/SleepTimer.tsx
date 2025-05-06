@@ -2,82 +2,56 @@
 
 import { useEffect, useState } from 'react';
 
-export default function SleepTimer({ babyId }: { babyId: number }) {
-  const [secondsLeft, setSecondsLeft] = useState<number | null>(null);
-  const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
-
-  const DURATION = 15 * 60; // 15 minutes
+export default function SleepTimer({ sleepLogId }: { sleepLogId: number }) {
+  const [secondsLeft, setSecondsLeft] = useState(15 * 60); // 15 min
+  const [lastLogged, setLastLogged] = useState<Date | null>(null);
 
   useEffect(() => {
-    const active = localStorage.getItem(`sleep_timer_${babyId}`);
-    if (active) {
-      const { startTime } = JSON.parse(active);
-      const elapsed = Math.floor((Date.now() - new Date(startTime).getTime()) / 1000);
-      const remaining = DURATION - elapsed;
-      if (remaining > 0) {
-        setSecondsLeft(remaining);
-      }
-    }
-  }, [babyId]);
-
-  useEffect(() => {
-    if (secondsLeft === null) return;
-
-    if (secondsLeft <= 0) {
-      alert('⏰ Timer finished! Check on the baby.');
-      setSecondsLeft(null);
-      localStorage.removeItem(`sleep_timer_${babyId}`);
-      return;
-    }
-
-    const id = setInterval(() => {
-      setSecondsLeft((s) => (s !== null ? s - 1 : null));
+    const interval = setInterval(() => {
+      setSecondsLeft((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
-    setIntervalId(id);
+    return () => clearInterval(interval);
+  }, []);
 
-    return () => clearInterval(id);
-  }, [secondsLeft]);
-
-  const startTimer = () => {
-    localStorage.setItem(
-      `sleep_timer_${babyId}`,
-      JSON.stringify({ startTime: new Date().toISOString() })
-    );
-    setSecondsLeft(DURATION);
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m}:${s.toString().padStart(2, '0')}`;
   };
 
-  const resetTimer = () => {
-    startTimer();
+  const logSleepCheck = async () => {
+    try {
+      const res = await fetch(`/api/sleep-check/${sleepLogId}`, {
+        method: 'POST',
+      });
+      if (res.ok) {
+        setLastLogged(new Date());
+        setSecondsLeft(15 * 60); // reset countdown
+      } else {
+        alert('❌ Failed to log check');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('❌ Network error while logging check');
+    }
   };
-
-  const format = (s: number) => {
-    const m = Math.floor(s / 60)
-      .toString()
-      .padStart(2, '0');
-    const sec = (s % 60).toString().padStart(2, '0');
-    return `${m}:${sec}`;
-  };
-
-  if (secondsLeft === null) {
-    return (
-      <button
-        onClick={startTimer}
-        className="text-xs bg-yellow-500 text-white px-2 py-1 rounded"
-      >
-        ▶️ Start Timer
-      </button>
-    );
-  }
 
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-sm font-mono text-yellow-700">{format(secondsLeft)}</span>
+    <div className="border p-4 rounded shadow text-center space-y-2">
+      <h3 className="font-semibold text-lg">🕒 15-Min Sleep Check</h3>
+      <div className="text-3xl font-mono text-blue-700">{formatTime(secondsLeft)}</div>
       <button
-        onClick={resetTimer}
-        className="text-xs bg-yellow-500 text-white px-2 py-1 rounded"
+        onClick={logSleepCheck}
+        className="bg-blue-600 text-white px-4 py-1 rounded disabled:opacity-50"
+        disabled={secondsLeft === 0}
       >
-        🔁 Reset Timer
+        🔄 Reset Timer & Log Check
       </button>
+      {lastLogged && (
+        <div className="text-green-600 text-sm">
+          ✅ Last check: {lastLogged.toLocaleTimeString()}
+        </div>
+      )}
     </div>
   );
 }

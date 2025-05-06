@@ -1,4 +1,3 @@
-// src/components/FeedingForm.tsx
 'use client';
 
 import { useState } from 'react';
@@ -8,28 +7,33 @@ export default function FeedingForm({ babyId }: { babyId: number }) {
   const [menu, setMenu] = useState('');
   const [quantity, setQuantity] = useState('');
   const [note, setNote] = useState('');
-  const [submitted, setSubmitted] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetch('/api/feeding', {
+    setStatus('saving');
+
+    const res = await fetch('/api/feeding', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ babyId, mealType, menu, quantity: Number(quantity), note }),
     });
 
-    setMenu('');
-    setQuantity('');
-    setNote('');
-    setSubmitted(true);
+    if (res.ok) {
+      setMenu('');
+      setQuantity('');
+      setNote('');
+      setStatus('saved');
+    } else {
+      alert('Something went wrong while saving.');
+      setStatus('idle');
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
-      {submitted && <p className="text-green-600 text-sm">✅ Feeding saved!</p>}
-
+    <form onSubmit={handleSubmit} className="space-y-4 max-w-md text-sm">
       <div>
-        <label className="block text-sm font-medium">Meal Type</label>
+        <label className="block font-medium">Meal Type</label>
         <select
           value={mealType}
           onChange={(e) => setMealType(e.target.value)}
@@ -43,7 +47,7 @@ export default function FeedingForm({ babyId }: { babyId: number }) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium">Menu</label>
+        <label className="block font-medium">Menu</label>
         <input
           type="text"
           value={menu}
@@ -54,7 +58,7 @@ export default function FeedingForm({ babyId }: { babyId: number }) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium">Quantity (g)</label>
+        <label className="block font-medium">Quantity (g)</label>
         <input
           type="number"
           value={quantity}
@@ -65,7 +69,7 @@ export default function FeedingForm({ babyId }: { babyId: number }) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium">Note</label>
+        <label className="block font-medium">Note</label>
         <textarea
           value={note}
           onChange={(e) => setNote(e.target.value)}
@@ -73,8 +77,12 @@ export default function FeedingForm({ babyId }: { babyId: number }) {
         />
       </div>
 
-      <button type="submit" className="bg-blue-600 text-white px-4 py-1 rounded">
-        💾 Save Feeding
+      <button
+        type="submit"
+        className="bg-blue-600 text-white px-4 py-1 rounded"
+        disabled={status === 'saving'}
+      >
+        {status === 'saving' ? 'Saving...' : status === 'saved' ? '✅ Saved!' : '💾 Save Feeding'}
       </button>
     </form>
   );

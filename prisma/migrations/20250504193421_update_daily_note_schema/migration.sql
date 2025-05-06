@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `DailyNote` ALTER COLUMN `date` DROP DEFAULT,
+    MODIFY `content` VARCHAR(191) NOT NULL;

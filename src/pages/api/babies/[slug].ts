@@ -14,10 +14,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   if (req.method === 'PUT') {
-    const { name } = req.body;
-    const updated = await prisma.baby.update({ where: { id }, data: { name } });
+    const { name, email } = req.body;
+  
+    const updated = await prisma.baby.update({
+      where: { id },
+      data: {
+        name,
+        email,
+      },
+    });
+  
     return res.status(200).json(updated);
   }
+  
 
   if (req.method === 'DELETE') {
     await prisma.baby.delete({ where: { id } });

@@ -10,23 +10,32 @@ datasource db {
 model Baby {
   id           Int           @id @default(autoincrement())
   name         String
-  email String?  // ← the `?` makes it optional
+  email        String?
   createdAt    DateTime      @default(now())
   sleepLogs    SleepLog[]
   diaperLogs   DiaperLog[]
   feedingLogs  FeedingLog[]
   bottleFeeds  BottleFeed[]
+  dailyNotes   DailyNote[]   // 👈 Add this line
 }
+
 
 
 model SleepLog {
-  id        Int      @id @default(autoincrement())
+  id        Int           @id @default(autoincrement())
   babyId    Int
-  baby      Baby     @relation(fields: [babyId], references: [id], onDelete: Cascade)
+  baby      Baby          @relation(fields: [babyId], references: [id], onDelete: Cascade)
   start     DateTime
   end       DateTime?
-  note      String?  @db.Text
+  note      String?       @db.Text
+  createdAt DateTime      @default(now())
+
+  // 👇 Add this line to complete the relation
+  sleepChecks SleepCheck[]
 }
+
+
+
 
 model DiaperLog {
   id        Int      @id @default(autoincrement())
@@ -56,6 +65,27 @@ model BottleFeed {
   volumeMl  Int
   note      String?  @db.Text
 }
+
+model DailyNote {
+  id      Int      @id @default(autoincrement())
+  babyId  Int
+  date    DateTime
+  content String
+
+  baby    Baby     @relation(fields: [babyId], references: [id], onDelete: Cascade)
+
+  @@unique([babyId, date], name: "babyId_date")
+}
+
+model SleepCheck {
+  id        Int      @id @default(autoincrement())
+  sleepLog  SleepLog @relation(fields: [sleepLogId], references: [id], onDelete: Cascade)
+  sleepLogId Int
+  checkedAt DateTime @default(now())
+}
+
+
+
 
 enum DiaperType {
   WET

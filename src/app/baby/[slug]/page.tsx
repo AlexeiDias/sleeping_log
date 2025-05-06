@@ -1,4 +1,3 @@
-// src/app/baby/[slug]/page.tsx
 import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import SleepChart from '@/components/SleepChart';
@@ -7,45 +6,56 @@ import BottleChart from '@/components/BottleChart';
 import DiaperChart from '@/components/DiaperChart';
 import UnifiedLogTable from '@/components/UnifiedLogTable';
 import Link from 'next/link';
+import DailyNoteForm from '@/components/DailyNoteForm';
+import SleepTimer from '@/components/SleepTimer';
 
-// Inside your component's return:
-<Link
-  href="/"
-  className="inline-block mb-4 text-blue-600 hover:underline text-sm"
->
-  ← Back to Main Page
-</Link>
+export default async function BabyDashboard(props: { params: { slug: string } }) {
+  const { slug } = await props.params; // ✅ async destructure
+  const decodedSlug = decodeURIComponent(slug);
 
-export default async function BabyDashboard({ params }: { params: { slug: string } }) {
   const baby = await prisma.baby.findFirst({
-    where: { name: { equals: decodeURIComponent(params.slug) } }
+    where: { name: decodedSlug },
+    include: {
+      sleepLogs: {
+        where: { end: null },
+        orderBy: { start: 'desc' },
+        take: 1,
+      },
+    },
   });
 
   if (!baby) return notFound();
 
   const babyId = baby.id;
+  const activeSleepLogId = baby.sleepLogs[0]?.id ?? null;
 
   return (
-    
     <div className="p-6 space-y-6">
-        <Link
-  href="/"
-  className="inline-block mb-4 text-blue-600 hover:underline text-sm"
->
-  ← Back to Main Page
-</Link>
+      <Link href="/" className="inline-block mb-4 text-blue-600 hover:underline text-sm">
+        ← Back to Main Page
+      </Link>
+
       <h1 className="text-2xl font-bold">👶 {baby.name}'s Activity Dashboard</h1>
 
-      {/* Visuals */}
+      <Link
+        href={`/baby/${decodedSlug}/sleep-report`}
+        className="inline-block text-blue-600 hover:underline text-sm"
+      >
+        🖨️ View Printable Sleep Log
+      </Link>
+
+      {/* Log Summary */}
+      {activeSleepLogId && <SleepTimer sleepLogId={activeSleepLogId} />}
+      <UnifiedLogTable babyId={babyId} />
+      <DailyNoteForm babyId={baby.id} />
+
+      {/* Charts */}
       <div className="grid gap-4 md:grid-cols-2">
         <SleepChart babyId={babyId} />
         <FeedingChart babyId={babyId} />
         <BottleChart babyId={babyId} />
         <DiaperChart babyId={babyId} />
       </div>
-
-      {/* Log Summary */}
-      <UnifiedLogTable babyId={babyId} />
     </div>
   );
 }
