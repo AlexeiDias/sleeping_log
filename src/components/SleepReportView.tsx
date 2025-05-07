@@ -7,7 +7,7 @@ type SleepLog = {
   start: string;
   end: string | null;
   note: string | null;
-  sleepChecks: { id: number; time: string }[];
+  sleepChecks: { id: number; checkedAt: string }[]; // ✅ FIXED
 };
 
 type Props = {
@@ -39,7 +39,7 @@ export default function SleepReportView({ babyName, date, facility, logs }: Prop
 
       <h2 className="font-semibold mt-4 mb-2">🕒 Sleep Sessions</h2>
       <table className="w-full border text-left text-sm mb-6">
-        <thead className="bg-gray-100 text-gray-800  print:bg-white">
+        <thead className="bg-gray-100 text-gray-800 print:bg-white">
           <tr>
             <th className="border px-2 py-1">Start</th>
             <th className="border px-2 py-1">End</th>
@@ -62,12 +62,11 @@ export default function SleepReportView({ babyName, date, facility, logs }: Prop
       <h2 className="font-semibold mb-2">🔁 15-Minute Checks</h2>
       {logs.map((log) => (
         <div key={log.id} className="mb-4">
-          <p className="italic text-gray-700 mb-1">
-            Checks for sleep started at {new Date(log.start).toLocaleTimeString()}:
-          </p>
           <ul className="list-disc ml-6">
             {log.sleepChecks.map((check) => (
-              <li key={check.id}>{new Date(check.time).toLocaleTimeString()}</li>
+              <li key={check.id}>
+                Sleep check performed at {new Date(check.checkedAt).toLocaleTimeString()}
+              </li>
             ))}
           </ul>
         </div>
