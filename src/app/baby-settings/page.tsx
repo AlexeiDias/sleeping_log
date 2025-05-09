@@ -6,13 +6,18 @@ import { useRouter } from 'next/navigation';
 export default function BabySettings() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [babies, setBabies] = useState([]);
+  const [babies, setBabies] = useState<any[]>([]);
+  const [statusMsg, setStatusMsg] = useState('');
   const router = useRouter();
 
-  const fetchBabies = () => {
-    fetch('/api/babies')
-      .then((res) => res.json())
-      .then(setBabies);
+  const fetchBabies = async () => {
+    try {
+      const res = await fetch('/api/babies');
+      const data = await res.json();
+      setBabies(data || []);
+    } catch (err) {
+      console.error('🚨 Failed to fetch babies:', err);
+    }
   };
 
   useEffect(() => {
@@ -34,6 +39,25 @@ export default function BabySettings() {
   const deleteBaby = async (id: number) => {
     await fetch(`/api/babies/${id}`, { method: 'DELETE' });
     fetchBabies();
+  };
+
+  const sendReport = async (babyId: number, babyName: string) => {
+    setStatusMsg(`📤 Sending report for ${babyName}...`);
+    try {
+      const res = await fetch(`/api/reports/send-daily?babyId=${babyId}`);
+      const data = await res.json();
+
+      if (res.ok) {
+        setStatusMsg(`✅ Report sent for ${babyName}`);
+      } else {
+        setStatusMsg(`❌ Failed to send report for ${babyName}`);
+      }
+    } catch (err) {
+      console.error('❌ Report error:', err);
+      setStatusMsg(`❌ Error sending report for ${babyName}`);
+    }
+
+    setTimeout(() => setStatusMsg(''), 4000);
   };
 
   return (
@@ -72,32 +96,36 @@ export default function BabySettings() {
         </button>
       </div>
 
+      {statusMsg && (
+        <div className="mb-2 text-sm text-blue-700 bg-blue-100 p-2 rounded">
+          {statusMsg}
+        </div>
+      )}
+
       <ul className="list-disc ml-6">
-        {babies.map((baby: any) => (
-          <li key={baby.id} className="flex justify-between items-center gap-2 mb-1">
-            <div>
-              {baby.name} <span className="text-xs text-gray-500">{baby.email}</span>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => deleteBaby(baby.id)}
-                className="bg-red-600 text-white px-2 py-1 rounded text-sm"
-              >
-                Delete
-              </button>
-              <button
-                onClick={async () => {
-                  const res = await fetch(`/api/reports/send-daily?babyId=${baby.id}`);
-                  if (res.ok) alert(`📧 Report sent to ${baby.email}`);
-                  else alert('❌ Failed to send report.');
-                }}
-                className="bg-indigo-600 text-white px-3 py-1 text-sm rounded"
-              >
-                📧 Send Report
-              </button>
-            </div>
-          </li>
-        ))}
+        {babies?.length > 0 ? (
+          babies.map((baby: any) => (
+            <li key={baby.id} className="flex justify-between items-center gap-2 mb-1">
+              <span>{baby.name}</span>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => sendReport(baby.id, baby.name)}
+                  className="bg-blue-600 text-white px-3 py-1 text-sm rounded"
+                >
+                  📧 Send Report
+                </button>
+                <button
+                  onClick={() => deleteBaby(baby.id)}
+                  className="bg-red-600 text-white px-3 py-1 text-sm rounded"
+                >
+                  🗑️ Delete
+                </button>
+              </div>
+            </li>
+          ))
+        ) : (
+          <li className="text-gray-500 italic">No babies found.</li>
+        )}
       </ul>
     </main>
   );

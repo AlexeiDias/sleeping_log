@@ -4,18 +4,22 @@ import { prisma } from '@/lib/prisma';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const sleepLogId = parseInt(req.query.sleepLogId as string);
-
+  console.log('📩 /api/sleep-check/[sleepLogId] HIT');
   if (isNaN(sleepLogId)) {
     return res.status(400).json({ error: 'Invalid sleepLogId' });
   }
 
   if (req.method === 'POST') {
     const check = await prisma.sleepCheck.create({
-      data: { sleepLogId },
+      data: {
+        sleepLogId,
+        checkedAt: new Date(), // ✅ add timestamp
+      },
     });
-
+  
     return res.status(201).json(check);
   }
+  
 
   if (req.method === 'GET') {
     const checks = await prisma.sleepCheck.findMany({

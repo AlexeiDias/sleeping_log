@@ -1,4 +1,3 @@
-// src/components/SleepChart.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -38,16 +37,57 @@ export default function SleepChart({ babyId }: { babyId: number }) {
           log.end ? (new Date(log.end).getTime() - new Date(log.start).getTime()) / 60000 : 0
         ),
         borderColor: '#3b82f6',
-        backgroundColor: '#93c5fd',
-        tension: 0.2,
+        backgroundColor: '#bfdbfe',
+        tension: 0.3,
+        fill: true,
+        pointRadius: 3,
+        pointHoverRadius: 5,
       },
     ],
   };
 
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      tooltip: {
+        mode: 'index' as const,
+        intersect: false,
+      },
+    },
+    scales: {
+      x: {
+        type: 'time' as const,
+        time: {
+          unit: 'day',
+        },
+        ticks: {
+          color: '#9ca3af',
+        },
+        grid: {
+          color: '#e5e7eb',
+        },
+      },
+      y: {
+        beginAtZero: true,
+        ticks: {
+          color: '#9ca3af',
+        },
+        grid: {
+          color: '#e5e7eb',
+        },
+      },
+    },
+  };
+
   return (
-    <div className="bg-white shadow rounded p-4">
-      <h2 className="text-lg font-semibold text-gray-800 mb-2">🛏️ Sleep Chart</h2>
-      <Line data={chartData} />
+    <div className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-700 rounded-lg p-4 sm:p-6 space-y-4 h-[300px] sm:h-[400px] overflow-hidden">
+      <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+        🛏️ Sleep Chart
+      </h2>
+      <div className="relative h-full w-full">
+        <Line data={chartData} options={chartOptions} />
+      </div>
     </div>
   );
 }

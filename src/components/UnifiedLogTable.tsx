@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 type LogType = 'SLEEP' | 'FEEDING' | 'BOTTLE' | 'DIAPER';
 
@@ -16,12 +16,7 @@ export default function UnifiedLogTable({ babyId }: { babyId: number }) {
 
   useEffect(() => {
     async function load() {
-      const [
-        sleepRes,
-        feedingRes,
-        bottleRes,
-        diaperRes
-      ] = await Promise.all([
+      const [sleepRes, feedingRes, bottleRes, diaperRes] = await Promise.all([
         fetch(`/api/sleep/${babyId}`).then((res) => res.json()),
         fetch(`/api/feeding/${babyId}`).then((res) => res.json()),
         fetch(`/api/bottle/${babyId}`).then((res) => res.json()),
@@ -68,25 +63,43 @@ export default function UnifiedLogTable({ babyId }: { babyId: number }) {
   }, [babyId]);
 
   return (
-    <div className="overflow-x-auto text-sm mt-6">
-      <h2 className="text-lg font-semibold mb-2">📒 Unified Activity Log</h2>
-      <table className="min-w-full border-collapse text-left">
-        <thead className="bg-gray-200 text-gray-800">
+    <div className="overflow-x-auto rounded-md border border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-900 p-4">
+      <h2 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">
+        📒 Unified Activity Log
+      </h2>
+      <table className="min-w-full table-auto text-sm sm:text-base">
+        <thead className="bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-200">
           <tr>
-            <th className="px-2 py-1">🕒 Time</th>
-            <th className="px-2 py-1">📛 Type</th>
-            <th className="px-2 py-1">📘 Summary</th>
-            <th className="px-2 py-1">📝 Note</th>
+            <th className="px-3 py-2 whitespace-nowrap">🕒 Time</th>
+            <th className="px-3 py-2 whitespace-nowrap">📛 Type</th>
+            <th className="px-3 py-2 whitespace-nowrap">📘 Summary</th>
+            <th className="px-3 py-2 whitespace-nowrap">📝 Note</th>
           </tr>
         </thead>
         <tbody>
           {logs.map((log, idx) => (
-            <tr key={idx} className="border-t">
-              <td className="px-2 py-1 whitespace-nowrap">{log.timestamp.toLocaleString()}</td>
-              <td className="px-2 py-1">{log.type}</td>
-              <td className="px-2 py-1">{log.summary}</td>
-              <td className="px-2 py-1 text-gray-600">{log.note || '-'}</td>
-            </tr>
+            <React.Fragment key={idx}>
+              <tr className="border-t border-gray-200 dark:border-zinc-700 hover:bg-gray-50 dark:hover:bg-zinc-800">
+                <td className="px-3 py-2 whitespace-nowrap text-gray-700 dark:text-gray-200">
+                  {log.timestamp.toLocaleString()}
+                </td>
+                <td className="px-3 py-2 text-blue-700 dark:text-blue-400 font-medium">
+                  {log.type}
+                </td>
+                <td className="px-3 py-2">{log.summary}</td>
+                <td className="px-3 py-2 text-gray-600 dark:text-gray-400">
+                  {/* no note here anymore */}
+                </td>
+              </tr>
+
+              {log.note && (
+                <tr className="bg-zinc-900 border-t border-zinc-700">
+                  <td colSpan={4} className="px-4 py-2 text-sm text-gray-400">
+                    📝 {log.note}
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
           ))}
         </tbody>
       </table>

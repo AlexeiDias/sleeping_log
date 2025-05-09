@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import SleepReportView from '@/components/SleepReportView';
 import PrintButton from '@/components/PrintButton';
+import Link from 'next/link';
 
 export default async function SleepReportPage(props: { params: Promise<{ slug: string }> }) {
   const { slug } = await props.params;
@@ -31,6 +32,14 @@ export default async function SleepReportPage(props: { params: Promise<{ slug: s
 
   return (
     <div className="p-6 space-y-4">
+      <div>
+      <Link
+      href={`/baby/${slug}`}
+      className="inline-block text-blue-600 hover:underline text-sm"
+    >
+      ← Back to Dashboard
+    </Link>
+    </div>
       <PrintButton />
       <SleepReportView
         babyName={baby.name}

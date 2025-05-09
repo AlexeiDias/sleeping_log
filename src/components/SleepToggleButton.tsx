@@ -126,13 +126,32 @@ export default function SleepToggleButton({ babyId }: { babyId: number }) {
     }
   };
 
-  const resetTimer = () => {
+  const resetTimer = async () => {
     setSecondsLeft(DURATION);
     localStorage.setItem(
       storageKey,
       JSON.stringify({ startTime: new Date().toISOString() })
     );
+  
+    if (latestLogId) {
+      try {
+        const res = await fetch(`/api/sleep-check/${latestLogId}`, {
+          method: 'POST',
+        });
+  
+        if (!res.ok) {
+          console.error('❌ Failed to log sleep check from reset');
+        } else {
+          console.log('✅ Sleep check logged from yellow reset');
+        }
+      } catch (err) {
+        console.error('❌ Error logging sleep check:', err);
+      }
+    } else {
+      console.warn('⚠️ No active sleepLogId available for check logging');
+    }
   };
+  
 
   const formatTime = (s: number) => {
     const m = Math.floor(s / 60)
@@ -148,7 +167,7 @@ export default function SleepToggleButton({ babyId }: { babyId: number }) {
         <>
           <button
             onClick={stopSleep}
-            className="bg-red-600 text-white px-3 py-1 text-xs rounded"
+            className="bg-red-600 text-white text-xs px-2 py-1  sm:text-sm sm:px-3 rounded"
           >
             🛑 Stop Sleeping
           </button>
@@ -159,7 +178,7 @@ export default function SleepToggleButton({ babyId }: { babyId: number }) {
               </span>
               <button
                 onClick={resetTimer}
-                className="text-xs bg-yellow-500 text-white px-2 py-1 rounded"
+                className="text-xs bg-yellow-500 text-white text-xs px-2 py-1 rounded sm:text-sm sm:px-3"
               >
                 🔁 Reset Timer
               </button>
@@ -169,7 +188,7 @@ export default function SleepToggleButton({ babyId }: { babyId: number }) {
       ) : (
         <button
           onClick={startSleep}
-          className="bg-green-600 text-white px-3 py-1 text-xs rounded"
+          className="bg-green-600 text-white text-xs px-2 py-1 rounded sm:text-sm sm:px-3"
         >
           🟢 Start Sleeping
         </button>
