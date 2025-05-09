@@ -73,7 +73,7 @@ export default function UnifiedLogTable({ babyId }: { babyId: number }) {
             <th className="px-3 py-2 whitespace-nowrap">🕒 Time</th>
             <th className="px-3 py-2 whitespace-nowrap">📛 Type</th>
             <th className="px-3 py-2 whitespace-nowrap">📘 Summary</th>
-            <th className="px-3 py-2 whitespace-nowrap">📝 Note</th>
+            
           </tr>
         </thead>
         <tbody>
