@@ -10,6 +10,7 @@ import {
   PointElement,
   TimeScale,
   Tooltip,
+  ChartOptions,
 } from 'chart.js';
 import 'chartjs-adapter-date-fns';
 import { SleepLog } from '@prisma/client';
@@ -46,20 +47,21 @@ export default function SleepChart({ babyId }: { babyId: number }) {
     ],
   };
 
-  const chartOptions = {
+  // ✅ Typed chart options for line chart
+  const chartOptions: ChartOptions<'line'> = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       tooltip: {
-        mode: 'index' as const,
+        mode: 'index',
         intersect: false,
       },
     },
     scales: {
       x: {
-        type: 'time' as const,
+        type: 'time',
         time: {
-          unit: 'day',
+          unit: 'day', // ✅ Typed literal — avoids TS error
         },
         ticks: {
           color: '#9ca3af',

@@ -29,7 +29,8 @@ export default async function BabyStatsPage(props: { params: Promise<{ slug: str
       <h1 className="text-2xl font-bold mb-4">🛏️ Sleep Stats for {baby.name}</h1>
 
       <div className="overflow-x-auto mt-4">
-      <SleepChart logs={logs} />
+      <SleepChart babyId={baby.id} />
+
 
 <div className="overflow-x-auto mt-4">
   <table className="min-w-full text-sm text-left border-collapse">
