@@ -52,9 +52,14 @@ export default async function SleepReportPage(props: { params: Promise<{ slug: s
           ← Back to Dashboard
         </Link>
       </div>
+  
+      {/* ✅ Dual Buttons */}
+      <div className="flex gap-2 items-center">
+        <PrintButton />
+        
 
-      <PrintButton />
-
+      </div>
+  
       <SleepReportView
         babyName={baby.name}
         date={today.toLocaleDateString()}
@@ -68,4 +73,5 @@ export default async function SleepReportPage(props: { params: Promise<{ slug: s
       />
     </div>
   );
+  
 }
