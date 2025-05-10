@@ -11,6 +11,7 @@ export default async function UnifiedLogPage(props: { params: Promise<{ slug: st
   });
 
   if (!baby) return notFound();
+  
 
   return <UnifiedLogPrintView babyId={baby.id} />;
 }
