@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+console.log("🧪 Deploy version: R1-final-attempt");
 
 console.log("🔍 SMTP ENV:", {
   host: process.env.EMAIL_HOST,
