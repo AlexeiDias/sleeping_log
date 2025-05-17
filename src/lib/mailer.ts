@@ -11,10 +11,18 @@ export const transporter = nodemailer.createTransport({
 });
 
 export async function sendMail(to: string, subject: string, html: string) {
-  await transporter.sendMail({
-    from: `"Baby Logger" <${process.env.EMAIL_USER}>`,
-    to,
-    subject,
-    html,
-  });
+  try {
+    const result = await transporter.sendMail({
+      from: `"Baby Logger" <${process.env.EMAIL_USER}>`,
+      to,
+      subject,
+      html,
+    });
+
+    console.log("✅ Email sent:", result);
+  } catch (error) {
+    console.error("❌ Email sending failed:", error);
+    throw error; // Make sure this surfaces in the API route
+  }
 }
+
