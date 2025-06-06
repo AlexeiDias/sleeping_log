@@ -1,7 +1,7 @@
 export const FACILITY_INFO = {
-    name: "Little Stars Daycare",
-    address: "123 Sunshine Ave, Happyville, CA",
-    phone: "(555) 123-4567",
-    license: "LIC-987654321",
+    name: "Little Start Daycare",
+    address: "9033 Stinson Beach Way, Elk Grove, 95758 - CA",
+    phone: "(415) 705-9104",
+    license: "344501236",
   };
   

@@ -1,0 +1,104 @@
+.
+├── README.md
+├── folder_structure.txt
+├── next.config.ts
+├── package-lock.json
+├── package.json
+├── postcss.config.mjs
+├── prisma
+│   ├── migrations
+│   │   ├── 20250429203022_init
+│   │   │   └── migration.sql
+│   │   ├── 20250503195550_add_cascade_delete
+│   │   │   └── migration.sql
+│   │   ├── 20250504105052_add_baby_email
+│   │   │   └── migration.sql
+│   │   ├── 20250504191808_add_daily_notes
+│   │   │   └── migration.sql
+│   │   ├── 20250504193421_update_daily_note_schema
+│   │   │   └── migration.sql
+│   │   ├── 20250506015505_add_sleeplog_created_at
+│   │   │   └── migration.sql
+│   │   └── migration_lock.toml
+│   └── schema.prisma
+├── public
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
+├── src
+│   ├── app
+│   │   ├── api
+│   │   │   └── reports
+│   │   │       ├── generate-pdf.ts
+│   │   │       └── pdf
+│   │   ├── baby
+│   │   │   └── [slug]
+│   │   │       ├── bottle
+│   │   │       ├── diaper
+│   │   │       ├── feeding
+│   │   │       ├── page.tsx
+│   │   │       ├── sleep-report
+│   │   │       ├── stats
+│   │   │       └── unified-log
+│   │   ├── baby-settings
+│   │   │   └── page.tsx
+│   │   ├── favicon.ico
+│   │   ├── globals.css
+│   │   ├── layout.tsx
+│   │   └── page.tsx
+│   ├── components
+│   │   ├── BabyCard.tsx
+│   │   ├── BottleChart.tsx
+│   │   ├── BottleForm.tsx
+│   │   ├── DailyNoteForm.tsx
+│   │   ├── DiaperChart.tsx
+│   │   ├── DiaperForm.tsx
+│   │   ├── FeedingChart.tsx
+│   │   ├── FeedingForm.tsx
+│   │   ├── PrintButton.tsx
+│   │   ├── SleepChart.tsx
+│   │   ├── SleepReportView.tsx
+│   │   ├── SleepTimer.tsx
+│   │   ├── SleepToggleButton.tsx
+│   │   ├── StartSleepButton.tsx
+│   │   ├── UnifiedLogPrintView.tsx
+│   │   └── UnifiedLogTable.tsx
+│   ├── constants
+│   │   └── facility.ts
+│   ├── lib
+│   │   ├── mailer.ts
+│   │   └── prisma.ts
+│   ├── pages
+│   │   └── api
+│   │       ├── babies
+│   │       │   ├── [slug].ts
+│   │       │   └── index.ts
+│   │       ├── bottle
+│   │       │   └── [babyId].ts
+│   │       ├── bottle.ts
+│   │       ├── dailynotes
+│   │       │   └── [babyId].ts
+│   │       ├── diaper
+│   │       │   └── [babyId].ts
+│   │       ├── diaper.ts
+│   │       ├── feeding
+│   │       │   └── [babyId].ts
+│   │       ├── feeding.ts
+│   │       ├── reports
+│   │       │   ├── send-daily.ts
+│   │       │   └── send-weekly.ts
+│   │       ├── sleep
+│   │       │   ├── [slug]
+│   │       │   ├── [slug].ts
+│   │       │   └── index.ts
+│   │       └── sleep-check
+│   │           └── [sleepLogId].ts
+│   └── utils
+│       ├── generateSleepPdf.ts
+│       └── reportHelpers.ts
+├── structure.txt
+└── tsconfig.json
+
+39 directories, 63 files

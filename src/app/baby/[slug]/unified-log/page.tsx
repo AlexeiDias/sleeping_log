@@ -1,3 +1,5 @@
+// src/app/baby/[slug]/unified-log/page.tsx
+
 import UnifiedLogPrintView from '@/components/UnifiedLogPrintView';
 import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
@@ -11,7 +13,6 @@ export default async function UnifiedLogPage(props: { params: Promise<{ slug: st
   });
 
   if (!baby) return notFound();
-  
 
-  return <UnifiedLogPrintView babyId={baby.id} />;
+  return <UnifiedLogPrintView babyId={baby.id} babyName={baby.name} slug={slug} />;
 }

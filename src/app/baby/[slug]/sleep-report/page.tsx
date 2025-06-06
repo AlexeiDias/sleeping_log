@@ -1,12 +1,13 @@
-// src/app/baby/[slug]/sleep-report/page.tsx
 import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import SleepReportView from '@/components/SleepReportView';
 import PrintButton from '@/components/PrintButton';
-import Link from 'next/link';
 
-export default async function SleepReportPage(props: { params: Promise<{ slug: string }> }) {
-  const { slug } = await props.params;
+import Link from 'next/link';
+import { FACILITY_INFO } from '@/constants/facility';
+
+export default async function SleepReportPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params; // ✅ Await the promise
   const decodedSlug = decodeURIComponent(slug);
 
   const baby = await prisma.baby.findFirst({
@@ -30,7 +31,6 @@ export default async function SleepReportPage(props: { params: Promise<{ slug: s
     orderBy: { start: 'asc' },
   });
 
-  // ✅ Serialize Date fields to strings
   const serializedLogs = logs.map(log => ({
     ...log,
     start: log.start.toISOString(),
@@ -52,26 +52,19 @@ export default async function SleepReportPage(props: { params: Promise<{ slug: s
           ← Back to Dashboard
         </Link>
       </div>
-  
-      {/* ✅ Dual Buttons */}
+
       <div className="flex gap-2 items-center">
         <PrintButton />
+        </div>
+
         
 
-      </div>
-  
       <SleepReportView
         babyName={baby.name}
         date={today.toLocaleDateString()}
-        facility={{
-          name: 'Little Stars Daycare',
-          address: '123 Sunshine St, Happy Town, CA',
-          phone: '(555) 123-4567',
-          license: 'CA-DC-987654',
-        }}
+        facility={FACILITY_INFO}
         logs={serializedLogs}
       />
     </div>
   );
-  
 }
