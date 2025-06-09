@@ -1,3 +1,4 @@
+// Add this at the top if not already present
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,17 +8,53 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Baby {
-  id           Int           @id @default(autoincrement())
-  name         String
-  email        String?
-  createdAt    DateTime      @default(now())
-  sleepLogs    SleepLog[]
-  diaperLogs   DiaperLog[]
-  feedingLogs  FeedingLog[]
-  bottleFeeds  BottleFeed[]
-  dailyNotes   DailyNote[]   // 👈 Add this line
+// 🚨 New ENUM for user roles
+enum Role {
+  ADMIN
+  STAFF
 }
+
+// 🏢 Facility Model
+model Facility {
+  id        Int      @id @default(autoincrement())
+  name      String
+  address   String
+  license   String
+  createdAt DateTime @default(now())
+
+  users     User[]
+  babies    Baby[]
+}
+
+// 👤 User Model
+model User {
+  id          Int      @id @default(autoincrement())
+  email       String   @unique
+  name        String?
+  role        Role     @default(STAFF)
+  facilityId  Int
+  facility    Facility @relation(fields: [facilityId], references: [id])
+  createdAt   DateTime @default(now())
+}
+
+// 👶 Updated Baby Model
+model Baby {
+  id          Int       @id @default(autoincrement())
+  name        String
+  email       String?
+  createdAt   DateTime  @default(now())
+
+  facilityId  Int
+  facility    Facility  @relation(fields: [facilityId], references: [id])
+
+  sleepLogs   SleepLog[]
+  diaperLogs  DiaperLog[]
+  feedingLogs FeedingLog[]
+  bottleFeeds BottleFeed[]
+  dailyNotes  DailyNote[]
+}
+
+// ✅ Keep your other models as-is for now
 
 
 
