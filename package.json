@@ -9,7 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@prisma/client": "^6.7.0",
+    "@next-auth/prisma-adapter": "^1.0.7",
+    "@prisma/client": "^6.9.0",
     "autoprefixer": "^10.4.21",
     "canvas": "^3.1.0",
     "chart.js": "^4.4.9",
@@ -18,9 +19,9 @@
     "date-fns": "^4.1.0",
     "mysql2": "^3.14.1",
     "next": "15.3.1",
+    "next-auth": "^4.24.11",
     "nodemailer": "^7.0.0",
     "postcss": "^8.5.3",
-    "prisma": "^6.7.0",
     "puppeteer": "^24.8.0",
     "react": "^19.0.0",
     "react-chartjs-2": "^5.3.0",
@@ -29,10 +30,12 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/next-auth": "^3.13.0",
     "@types/node": "^20",
     "@types/nodemailer": "^6.4.17",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "prisma": "^6.9.0",
     "tailwindcss": "^4.1.4",
     "typescript": "^5"
   }

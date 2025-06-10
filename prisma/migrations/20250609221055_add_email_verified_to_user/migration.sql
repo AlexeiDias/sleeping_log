@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `User` ADD COLUMN `emailVerified` DATETIME(3) NULL,
+    MODIFY `role` ENUM('ADMIN', 'STAFF', 'HELPER') NOT NULL DEFAULT 'HELPER';
