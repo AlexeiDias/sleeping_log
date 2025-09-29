@@ -2,7 +2,7 @@ export const dynamic = 'force-dynamic';
 import SignOutButton from '@/components/SignOutButton';
 
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from "@/lib/auth";
 import { redirect } from 'next/navigation';
 import React from 'react';
 import SleepToggleButton from '@/components/SleepToggleButton';

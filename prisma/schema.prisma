@@ -52,8 +52,8 @@ model Baby {
   email       String?
   createdAt   DateTime  @default(now())
 
-  facilityId  Int
-  facility    Facility  @relation(fields: [facilityId], references: [id])
+  facilityId  Int?         // ✅ optional
+  facility    Facility?    @relation(fields: [facilityId], references: [id])
 
   sleepLogs   SleepLog[]
   diaperLogs  DiaperLog[]
@@ -61,6 +61,7 @@ model Baby {
   bottleFeeds BottleFeed[]
   dailyNotes  DailyNote[]
 }
+
 
 // ✅ Keep your other models as-is for now
 
